@@ -1,8 +1,12 @@
-FROM python:3
+FROM ubuntu:focal
 
 WORKDIR /usr/src/app
+# install general utils
+RUN apt update && apt install -y git iputils-ping && apt autoclean
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# install python utils
+RUN apt update && apt install -y python3 python3-pip && apt autoclean 
+
+RUN pip3 install git+https://github.com/EmbodiedCognition/py-c3d
 
 COPY . .
