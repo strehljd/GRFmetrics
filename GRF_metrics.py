@@ -81,8 +81,12 @@ class GRF_metrics:
         F_int = (norm_F_GRF * d) / (5) # https://www.facebook.com/kevinakirbydpm/photos/a.554861454611102/3747740051989877/?type=3 / 5cm is assumed acc. to paper
         return F_int
 
-    def calculate_vec_tibia():
-        vec = np.array([(1),(2),(3)])
+    def calculate_vec_AtoB(point_A, point_B):
+        # calculates the vector between 2 points A to B
+        vec = np.zeros((3, 1)) # 3D vector
+        vec[0] = point_B[0] - point_A[0]
+        vec[1] = point_B[1] - point_A[1]
+        vec[2] = point_B[2] - point_A[2]
         return vec
 
     def project_vector(x,y):
