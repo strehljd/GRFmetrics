@@ -71,6 +71,7 @@ class GRF_metrics:
         # safe data in a class object
         return  not is_failed
 
+
     def get_distance(points, GRF):
         # Calcualtes the vector of the distance between the GRF vector and the ankle joint along the sagittal plane
         vec = np.array([(1),(2),(3)])
@@ -93,22 +94,25 @@ class GRF_metrics:
         # projects vector x onto vector
         vec = y * np.dot(x, y) / np.dot(y, y) # https://en.wikipedia.org/wiki/Vector_projection
         return vec 
+    
+    def real_tibial_load():
 
-    if __name__ == "__main__":
-        print("Shalom!")
+        #LOOP
+        # Calulate real tibial load
+        points, GRF_vec = get_frame()
+        tibia_vec = calculate_vec_AtoB(point_ankle, point_knee)
+        d = get_distance(points, GRF)
+        
+        F_int = get_F_int(d,GRF)
+        F_ext = project_vector(GRF_vec,tibia_vec)
 
-        import_data()
+        F_tot = F_int + F_ext #acc. to paper
+        #ENDLOOP
 
-        for i in range(1,10):
-            # loop trough every frame
-
-            # Calulate real tibial load
-            points, GRF_vec = get_frame()
-            tibia_vec = calculate_vec_tibia(points)
-            d = get_distance(points, GRF)
-            
-            F_int = get_F_int(d,GRF)
-            F_ext = project_vector(GRF_vec,tibia_vec)
-
-            F_tot = F_int + F_ext #acc. to paper
-
+        J = F_tot
+        F_max = F_tot
+        return J, F_max 
+    
+#MAIN
+GRF = GRF_metrics()
+GRF_metrics.import_data(GRF)
