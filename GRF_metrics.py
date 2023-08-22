@@ -67,7 +67,27 @@ class GRF_metrics:
 
         with open("Sub1_r26_n3.c3d", "rb") as handle:
             reader = c3d.Reader(handle)
+
+            #use python lists for looping as it is more lightweight (https://stackoverflow.com/questions/31250129/python-numpy-array-of-numpy-arrays)
+            point_list = []
+            analog_list = []
+            for i, points, analog in reader.read_frames(): # this function has to be looped to get the data of each frame 
+                #append points and analog values to class variable
+                temp_points = points
+                point_list.append(temp_points) 
+
+                temp_analog = analog
+                analog_list.append(temp_analog)
+
+            self.points = np.asarray(point_list)
+            self.analog = np.asanyarray(analog_list)
+
+            #TODO Remove this debug print
+            print(self.points.shape)
+            print(self.analog.shape)
             self.print_metadata(reader)
+
+
 
         # safe data in a class object
         return not is_failed
