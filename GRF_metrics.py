@@ -2,7 +2,6 @@ from typing import Any
 import c3d #c3d library
 import numpy as np
 from numpy import linalg as LA
-from time import sleep
 
 from itertools import product
 
