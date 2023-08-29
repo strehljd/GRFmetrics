@@ -4,6 +4,7 @@ import numpy as np
 from numpy import linalg as LA
 
 from itertools import product
+import matplotlib.pyplot as plot
 
 
 class GRF_metrics:
@@ -85,7 +86,7 @@ class GRF_metrics:
             #TODO Remove this debug print
             print(self.points.shape)
             print(self.analog.shape)
-            self.print_metadata(reader)
+            #self.print_metadata(reader)
 
 
 
@@ -103,6 +104,38 @@ class GRF_metrics:
             5
         )  # https://www.facebook.com/kevinakirbydpm/photos/a.554861454611102/3747740051989877/?type=3 / 5cm is assumed acc. to paper
         return F_int
+
+    def get_tibia_vector(self, frame_number):
+        # specify frame number as 1-#last_frame
+        fig = plot.figure()
+        ax = plot.axes(projection='3d')
+
+        for i in range(0,125):
+            p_medial_malloulus = self.points[i][7][0:3] #take x,y,z (0:2) at frame (frame_number) for mallous medial (7)
+            p_lateral_malloulus = self.points[i][6][0:3] #take x,y,z (0:2) at frame (frame_number) for mallous lateral (6)
+            p_medial_femoral_epicondyle = self.points[i][5][0:3] #take x,y,z (0:2) at frame (frame_number) for epicondyle medial (5)
+            p_lateral_femoral_epicondyle = self.points[i][4][0:3] #take x,y,z (0:2) at frame (frame_number) for epicondyle lateral (4)
+
+
+            ax.scatter(p_medial_malloulus[0],p_medial_malloulus[1],p_medial_malloulus[2], marker=",", color="r")
+            ax.scatter(p_lateral_malloulus[0],p_lateral_malloulus[1],p_lateral_malloulus[2], marker=",", color="b")
+            ax.scatter(p_medial_femoral_epicondyle[0],p_medial_femoral_epicondyle[1],p_medial_femoral_epicondyle[2], marker="o", color="r")
+            ax.scatter(p_lateral_femoral_epicondyle[0],p_lateral_femoral_epicondyle[1],p_lateral_femoral_epicondyle[2], marker="o", color="b")
+
+        fig.savefig('temp.png', dpi=fig.dpi)
+
+        print("p_medial_malloulus", p_medial_malloulus)
+        print("p_lateral_malloulus", p_lateral_malloulus)
+        print("p_medial_femoral_epicondyle", p_medial_femoral_epicondyle)
+        print("p_lateral_femoral_epicondyle", p_lateral_femoral_epicondyle)
+
+
+        p_ankle_center = 0.5*(self.calculate_vec_AtoB(p_medial_malloulus, p_lateral_malloulus)) + p_medial_malloulus
+        p_knee_center = 0.5*(self.calculate_vec_AtoB(p_medial_femoral_epicondyle, p_lateral_femoral_epicondyle)) + p_medial_femoral_epicondyle
+
+        tibia_vec = self.calculate_vec_AtoB(p_ankle_center, p_knee_center)
+     
+        return tibia_vec
 
     def calculate_vec_AtoB(point_A, point_B):
         # calculates the vector between 2 points A to B
@@ -140,3 +173,4 @@ class GRF_metrics:
 # MAIN
 GRF = GRF_metrics()
 GRF_metrics.import_data(GRF)
+print(GRF_metrics.get_tibia_vector(GRF,600))
