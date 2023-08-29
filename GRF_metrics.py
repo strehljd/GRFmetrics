@@ -151,7 +151,7 @@ class GRF_metrics:
         return vec
 
     def project_vector(x, y):
-        # projects vector x onto vector
+        # projects vector x onto vector y
         vec = (
             y * np.dot(x, y) / np.dot(y, y)
         )  # https://en.wikipedia.org/wiki/Vector_projection
