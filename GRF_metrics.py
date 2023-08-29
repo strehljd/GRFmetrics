@@ -84,8 +84,8 @@ class GRF_metrics:
             self.analog = np.asanyarray(analog_list)
 
             #TODO Remove this debug print
-            print(self.points.shape)
-            print(self.analog.shape)
+            print("[import] Marker date shape: ", self.points.shape)
+            print("[import] Analog date shape: ", self.analog.shape)
             #self.print_metadata(reader)
 
 
