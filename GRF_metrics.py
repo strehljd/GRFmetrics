@@ -106,7 +106,18 @@ class GRF_metrics:
         return F_int
 
     def get_tibia_vector(self, frame_number):
-        # specify frame number as 1-#last_frame
+
+        frame_number = frame_number-1 # as defined in c3d fileformat
+        p_medial_malloulus = np.array(self.points[frame_number][7][0:3]).reshape(3,1) #take x,y,z (0:2) at frame (frame_number) for mallous medial (7)
+        p_lateral_malloulus = np.array(self.points[frame_number][6][0:3]).reshape(3,1) #take x,y,z (0:2) at frame (frame_number) for mallous lateral (6)
+        p_medial_femoral_epicondyle = np.array(self.points[frame_number][5][0:3]).reshape(3,1) #take x,y,z (0:2) at frame (frame_number) for epicondyle medial (5)
+        p_lateral_femoral_epicondyle = np.array(self.points[frame_number][4][0:3]).reshape(3,1) #take x,y,z (0:2) at frame (frame_number) for epicondyle lateral (4)
+
+        p_ankle_center = (0.5*(self.calculate_vec_AtoB(p_medial_malloulus, p_lateral_malloulus)) + p_medial_malloulus).reshape(3,1)
+        p_knee_center = (0.5*(self.calculate_vec_AtoB(p_medial_femoral_epicondyle, p_lateral_femoral_epicondyle)) + p_medial_femoral_epicondyle).reshape(3,1)
+
+        tibia_vec = (self.calculate_vec_AtoB(p_ankle_center, p_knee_center)).reshape(3,1)
+
         fig = plot.figure()
         ax = plot.axes(projection='3d')
 
