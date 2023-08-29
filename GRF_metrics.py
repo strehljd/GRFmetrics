@@ -118,34 +118,27 @@ class GRF_metrics:
 
         tibia_vec = (self.calculate_vec_AtoB(p_ankle_center, p_knee_center)).reshape(3,1)
 
+        ###
+        # TODO remove if running
+        # plot
         fig = plot.figure()
         ax = plot.axes(projection='3d')
+        ax.scatter(p_medial_malloulus[0],p_medial_malloulus[1],p_medial_malloulus[2], marker=",", color="r")
+        ax.scatter(p_lateral_malloulus[0],p_lateral_malloulus[1],p_lateral_malloulus[2], marker=",", color="b")
+        ax.scatter(p_medial_femoral_epicondyle[0],p_medial_femoral_epicondyle[1],p_medial_femoral_epicondyle[2], marker="o", color="r")
+        ax.scatter(p_lateral_femoral_epicondyle[0],p_lateral_femoral_epicondyle[1],p_lateral_femoral_epicondyle[2], marker="o", color="b")
+        ax.scatter(p_ankle_center[0],p_ankle_center[1],p_ankle_center[2], marker="<", color="g")
+        ax.scatter(p_knee_center[0],p_knee_center[1],p_knee_center[2], marker=">", color="g")
 
-        for i in range(0,125):
-            p_medial_malloulus = self.points[i][7][0:3] #take x,y,z (0:2) at frame (frame_number) for mallous medial (7)
-            p_lateral_malloulus = self.points[i][6][0:3] #take x,y,z (0:2) at frame (frame_number) for mallous lateral (6)
-            p_medial_femoral_epicondyle = self.points[i][5][0:3] #take x,y,z (0:2) at frame (frame_number) for epicondyle medial (5)
-            p_lateral_femoral_epicondyle = self.points[i][4][0:3] #take x,y,z (0:2) at frame (frame_number) for epicondyle lateral (4)
+        x = np.array([p_ankle_center[0], p_knee_center[0]])
+        y = np.array([p_ankle_center[1], p_knee_center[1]])
+        z = np.array([p_ankle_center[2], p_knee_center[2]])
+        ax.plot3D(x, y, z)
 
-
-            ax.scatter(p_medial_malloulus[0],p_medial_malloulus[1],p_medial_malloulus[2], marker=",", color="r")
-            ax.scatter(p_lateral_malloulus[0],p_lateral_malloulus[1],p_lateral_malloulus[2], marker=",", color="b")
-            ax.scatter(p_medial_femoral_epicondyle[0],p_medial_femoral_epicondyle[1],p_medial_femoral_epicondyle[2], marker="o", color="r")
-            ax.scatter(p_lateral_femoral_epicondyle[0],p_lateral_femoral_epicondyle[1],p_lateral_femoral_epicondyle[2], marker="o", color="b")
-
+        # save as pic
         fig.savefig('temp.png', dpi=fig.dpi)
+        ###
 
-        print("p_medial_malloulus", p_medial_malloulus)
-        print("p_lateral_malloulus", p_lateral_malloulus)
-        print("p_medial_femoral_epicondyle", p_medial_femoral_epicondyle)
-        print("p_lateral_femoral_epicondyle", p_lateral_femoral_epicondyle)
-
-
-        p_ankle_center = 0.5*(self.calculate_vec_AtoB(p_medial_malloulus, p_lateral_malloulus)) + p_medial_malloulus
-        p_knee_center = 0.5*(self.calculate_vec_AtoB(p_medial_femoral_epicondyle, p_lateral_femoral_epicondyle)) + p_medial_femoral_epicondyle
-
-        tibia_vec = self.calculate_vec_AtoB(p_ankle_center, p_knee_center)
-     
         return tibia_vec
 
     def calculate_vec_AtoB(point_A, point_B):
