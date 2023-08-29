@@ -141,9 +141,10 @@ class GRF_metrics:
 
         return tibia_vec
 
-    def calculate_vec_AtoB(point_A, point_B):
+    def calculate_vec_AtoB(self, point_A, point_B):
         # calculates the vector between 2 points A to B
         vec = np.zeros((3, 1))  # 3D vector
+
         vec[0] = point_B[0] - point_A[0]
         vec[1] = point_B[1] - point_A[1]
         vec[2] = point_B[2] - point_A[2]
