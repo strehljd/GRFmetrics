@@ -150,7 +150,7 @@ class GRF_metrics:
         vec[2] = point_B[2] - point_A[2]
         return vec
 
-    def project_vector(x, y):
+    def project_vector(self, x, y):
         # projects vector x onto vector y
         vec = (
             y * np.dot(x, y) / np.dot(y, y)
