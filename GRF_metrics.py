@@ -157,17 +157,26 @@ class GRF_metrics:
         )  # https://en.wikipedia.org/wiki/Vector_projection
         return vec
 
-    def real_tibial_load():
+    def real_tibial_load(self):
         # LOOP
-        # Calulate real tibial load
-        points, GRF_vec = get_frame()
-        tibia_vec = calculate_vec_AtoB(point_ankle, point_knee)
-        d = get_distance(points, GRF)
+        for frame_number in range(1,10):
+            # Calulate real tibial load
+            GRF_vec = np.zeros((3,1))
+            GRF_vec[0] = np.average(self.analog[frame_number][0])
+            GRF_vec[1] = np.average(self.analog[frame_number][1])
+            GRF_vec[2] = np.average(self.analog[frame_number][2])
 
-        F_int = get_F_int(d, GRF)
-        F_ext = project_vector(GRF_vec, tibia_vec)
+            print("[real_tibial] GRF vector: ", GRF_vec)
+            tibia_vec = self.get_tibia_vector(frame_number)
+            F_ext = self.project_vector(GRF_vec.reshape(3,), tibia_vec.reshape(3,))
 
-        F_tot = F_int + F_ext  # acc. to paper
+            print("[real_tibial] GRF projected: ", F_ext)
+
+            # points, GRF_vec = get_frame()
+            # d = get_distance(points, GRF)
+            # F_int = get_F_int(d, GRF)
+
+            F_tot = 0 + F_ext  # acc. to paper TODO: Add F_int
         # ENDLOOP
 
         J = F_tot
