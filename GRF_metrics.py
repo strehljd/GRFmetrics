@@ -211,30 +211,66 @@ class GRF_metrics:
 
         return lever
 
+
     def real_tibial_load(self):
+        number_frames = self.analog.shape[0]-1
+        print("#frames: ", number_frames)
+        F_int = np.zeros((number_frames,3)) # Pre-allocate matrix
+        F_ext = np.zeros((number_frames,3)) # Pre-allocate matrix
+        F_tot = np.zeros((number_frames,3)) # Pre-allocate matrix
+        
         # LOOP
-        for frame_number in range(1,10):
-            # Calulate real tibial load
+        for frame_number in range(0,number_frames):
+            # Calulate real tibial load based on the projected GRF
             GRF_vec = np.zeros((3,1))
             GRF_vec[0] = np.average(self.analog[frame_number][0])
             GRF_vec[1] = np.average(self.analog[frame_number][1])
             GRF_vec[2] = np.average(self.analog[frame_number][2])
 
-            print("[real_tibial] GRF vector: ", GRF_vec)
             tibia_vec = self.get_tibia_vector(frame_number)
-            F_ext = self.project_vector(GRF_vec.reshape(3,), tibia_vec.reshape(3,))
 
-            print("[real_tibial] GRF projected: ", F_ext)
+            # print("[real_tibial] GRF projected: ", F_ext) # TODO remove this debug print
 
-            # points, GRF_vec = get_frame()
-            # d = get_distance(points, GRF)
-            # F_int = get_F_int(d, GRF)
+            # Calculate the internal reaction force based on the (internal) muscle forces
+            F_int[frame_number,:] = self.get_F_int(GRF_vec, frame_number)
+            F_ext[frame_number,:] = self.project_vector(GRF_vec.reshape(3,), tibia_vec.reshape(3,))
 
-            F_tot = 0 + F_ext  # acc. to paper TODO: Add F_int
+            F_tot[frame_number,:] = F_int[frame_number,:] + F_ext[frame_number,:]  # acc. to paper TODO: Add F_int
         # ENDLOOP
 
-        J = F_tot
-        F_max = F_tot
+        # forces to euclidian norm 
+        F_int_abs = np.zeros((number_frames,1)) # Pre-allocate matrix
+        for i in range(1,number_frames):
+            F_int_abs[i] = LA.norm(F_int[i,:])
+            
+        F_ext_abs = np.zeros((number_frames,1)) # Pre-allocate matrix
+        for i in range(1,number_frames):
+            F_ext_abs[i] = LA.norm(F_ext[i,:])
+            
+        # F_tot is equal to F_tibia??
+        F_tot_abs = np.zeros((number_frames,1)) # Pre-allocate matrix
+        for i in range(1,number_frames):
+            F_tot_abs[i] = LA.norm(F_tot[i,:])
+            
+            
+        # get maximum F_tibia
+        index_max = np.argmax(F_tot_abs)
+        
+
+        # plot forces for debug purposes
+        plot.plot(F_int_abs, linestyle='dashed', label='F_int')
+        plot.plot(F_ext_abs, linestyle='dashed', label='F_ext')
+        plot.plot(F_tot_abs, linestyle='dashed', label='F_tibia')
+        plot.plot(index_max, F_tot_abs[index_max], 'ro', label='F_tibia_max')
+        plot.legend(loc='upper left')
+        plot.title(self.file_name)
+        plot.show()
+        
+        
+        # define return values
+        F_max = F_tot_abs[index_max]
+        J = np.trapz(F_tot_abs, dx=1)
+        print("J = ", J) # TODO remove debug print
         return J, F_max
 
 
