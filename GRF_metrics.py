@@ -63,10 +63,11 @@ class GRF_metrics:
 
     ### (END) TAKEN FROM metadata.py ###
 
-    def import_data(self):
+    def import_data(self, file):
         is_failed = False
+        self.file_name = file
 
-        with open("Sub1_r26_n3.c3d", "rb") as handle:
+        with open(file, "rb") as handle:
             reader = c3d.Reader(handle)
 
             #use python lists for looping as it is more lightweight (https://stackoverflow.com/questions/31250129/python-numpy-array-of-numpy-arrays)
@@ -86,7 +87,7 @@ class GRF_metrics:
             #TODO Remove this debug print
             print("[import] Marker date shape: ", self.points.shape)
             print("[import] Analog date shape: ", self.analog.shape)
-            #self.print_metadata(reader)
+            self.print_metadata(reader)
 
 
 
@@ -184,7 +185,15 @@ class GRF_metrics:
         return J, F_max
 
 
+
 # MAIN
+# init
 GRF = GRF_metrics()
-GRF_metrics.import_data(GRF)
-print(GRF_metrics.get_tibia_vector(GRF,600))
+
+# file_names = ["Sub1_r26_p0.c3d", "Sub2_r26_p0.c3d", "Sub3_r26_p0.c3d" ,"Sub4_r26_p0.c3d" , "Sub5_r26_p0.c3d"]
+file_names = ["Sub5_func_cal.c3d", "Sub5_static_cal.c3d"]
+
+# do everything
+for file_name in file_names:
+    GRF_metrics.import_data(GRF, file_name)
+    GRF_metrics.real_tibial_load(GRF)
