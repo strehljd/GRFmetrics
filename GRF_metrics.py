@@ -94,17 +94,6 @@ class GRF_metrics:
         # safe data in a class object
         return not is_failed
 
-    def get_distance(points, GRF):
-        # Calcualtes the vector of the distance between the GRF vector and the ankle joint along the sagittal plane
-        vec = np.array([(1), (2), (3)])
-        return vec
-
-    def get_F_int(d, F_GRF):
-        norm_F_GRF = LA.norm(F_GRF)
-        F_int = (norm_F_GRF * d) / (
-            5
-        )  # https://www.facebook.com/kevinakirbydpm/photos/a.554861454611102/3747740051989877/?type=3 / 5cm is assumed acc. to paper
-        return F_int
 
     def get_tibia_vector(self, frame_number):
 
@@ -120,25 +109,25 @@ class GRF_metrics:
         tibia_vec = (self.calculate_vec_AtoB(p_ankle_center, p_knee_center)).reshape(3,1)
 
         ###
-        # TODO remove if running
-        # plot
-        fig = plot.figure()
-        ax = plot.axes(projection='3d')
-        ax.scatter(p_medial_malloulus[0],p_medial_malloulus[1],p_medial_malloulus[2], marker=",", color="r")
-        ax.scatter(p_lateral_malloulus[0],p_lateral_malloulus[1],p_lateral_malloulus[2], marker=",", color="b")
-        ax.scatter(p_medial_femoral_epicondyle[0],p_medial_femoral_epicondyle[1],p_medial_femoral_epicondyle[2], marker="o", color="r")
-        ax.scatter(p_lateral_femoral_epicondyle[0],p_lateral_femoral_epicondyle[1],p_lateral_femoral_epicondyle[2], marker="o", color="b")
-        ax.scatter(p_ankle_center[0],p_ankle_center[1],p_ankle_center[2], marker="<", color="g")
-        ax.scatter(p_knee_center[0],p_knee_center[1],p_knee_center[2], marker=">", color="g")
+        # # TODO remove if running
+        # # plot
+        # fig = plot.figure()
+        # ax = plot.axes(projection='3d')
+        # ax.scatter(p_medial_malloulus[0],p_medial_malloulus[1],p_medial_malloulus[2], marker=",", color="r")
+        # ax.scatter(p_lateral_malloulus[0],p_lateral_malloulus[1],p_lateral_malloulus[2], marker=",", color="b")
+        # ax.scatter(p_medial_femoral_epicondyle[0],p_medial_femoral_epicondyle[1],p_medial_femoral_epicondyle[2], marker="o", color="r")
+        # ax.scatter(p_lateral_femoral_epicondyle[0],p_lateral_femoral_epicondyle[1],p_lateral_femoral_epicondyle[2], marker="o", color="b")
+        # ax.scatter(p_ankle_center[0],p_ankle_center[1],p_ankle_center[2], marker="<", color="g")
+        # ax.scatter(p_knee_center[0],p_knee_center[1],p_knee_center[2], marker=">", color="g")
 
-        x = np.array([p_ankle_center[0], p_knee_center[0]])
-        y = np.array([p_ankle_center[1], p_knee_center[1]])
-        z = np.array([p_ankle_center[2], p_knee_center[2]])
-        ax.plot3D(x, y, z)
+        # x = np.array([p_ankle_center[0], p_knee_center[0]])
+        # y = np.array([p_ankle_center[1], p_knee_center[1]])
+        # z = np.array([p_ankle_center[2], p_knee_center[2]])
+        # ax.plot3D(x, y, z)
 
-        # save as pic
-        fig.savefig('temp.png', dpi=fig.dpi)
-        ###
+        # # save as pic
+        # fig.savefig('temp.png', dpi=fig.dpi)
+        # ###
 
         return tibia_vec
 
